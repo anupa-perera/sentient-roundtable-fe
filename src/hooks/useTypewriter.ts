@@ -18,9 +18,13 @@ export function useTypewriter(texts: string[]): string {
   const charPos = useRef(0);
 
   useEffect(() => {
+    if (texts.length === 0) return;
+
     let timer: ReturnType<typeof setTimeout>;
+    let active = true;
 
     function tick() {
+      if (!active) return;
       const current = texts[idx.current];
 
       if (phase.current === "typing") {
@@ -37,7 +41,6 @@ export function useTypewriter(texts: string[]): string {
         phase.current = "erasing";
         timer = setTimeout(tick, ERASE_SPEED);
       } else {
-        // erasing
         charPos.current--;
         setDisplay(current.slice(0, charPos.current));
 
@@ -52,7 +55,10 @@ export function useTypewriter(texts: string[]): string {
     }
 
     timer = setTimeout(tick, TYPE_SPEED);
-    return () => clearTimeout(timer);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, [texts]);
 
   return display;

@@ -35,7 +35,9 @@ export function SessionPage(): JSX.Element {
   const [exporting, setExporting] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const isNearBottom = useRef(true);
 
   const effectiveSessionId = requestedSessionId ?? sessionId;
   useRoundtableSSE(effectiveSessionId);
@@ -59,9 +61,25 @@ export function SessionPage(): JSX.Element {
     return list;
   }, [selectedModels, timeline]);
 
-  // Auto-scroll chat to bottom on new messages
+  // Track whether user is scrolled near the bottom
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatContainerRef.current;
+    if (!container) return;
+    const SCROLL_BOTTOM_THRESHOLD = 80;
+    function handleScroll() {
+      if (!container) return;
+      isNearBottom.current =
+        container.scrollHeight - container.scrollTop - container.clientHeight < SCROLL_BOTTOM_THRESHOLD;
+    }
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Auto-scroll only when user is already near the bottom
+  useEffect(() => {
+    if (isNearBottom.current) {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [timeline.length, liveTokenBuffer]);
 
   /**
@@ -194,7 +212,7 @@ export function SessionPage(): JSX.Element {
           </div>
 
           {/* Chat messages area */}
-          <div className="flex-1 space-y-4 overflow-auto px-5 py-4" style={{ maxHeight: "36rem" }}>
+          <div ref={chatContainerRef} className="flex-1 space-y-4 overflow-auto px-5 py-4" style={{ maxHeight: "36rem" }}>
             {timeline.length === 0 && !liveTokenBuffer && (
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-dashed border-slate-200 dark:border-slate-700">
@@ -386,9 +404,8 @@ function ErrorSnackbar({
       <div
         role="status"
         aria-live="polite"
-        className={`pointer-events-auto rounded-xl border border-red-200/80 bg-red-50/95 px-4 py-3 shadow-lg backdrop-blur transition-all duration-300 dark:border-red-800/60 dark:bg-red-900/35 ${
-          visible ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
-        }`}
+        className={`pointer-events-auto rounded-xl border border-red-200/80 bg-red-50/95 px-4 py-3 shadow-lg backdrop-blur transition-all duration-300 dark:border-red-800/60 dark:bg-red-900/35 ${visible ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
+          }`}
       >
         <div className="flex items-start gap-3">
           <div className="mt-0.5 rounded-full bg-red-100 p-1 dark:bg-red-900/60">
@@ -499,13 +516,12 @@ function StatusBadge({ phase, round }: { phase: string; round: number }): JSX.El
   return (
     <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 dark:border-slate-700 dark:bg-slate-800/80">
       <span
-        className={`inline-block h-1.5 w-1.5 rounded-full ${
-          phase === "complete"
+        className={`inline-block h-1.5 w-1.5 rounded-full ${phase === "complete"
             ? "bg-emerald-500"
             : phase === "running"
               ? "animate-pulse bg-ember"
               : "bg-slate-400"
-        }`}
+          }`}
       />
       <span className="font-mono text-[10px] font-medium text-slatewarm dark:text-slate-400">
         {phase}{round > 0 ? ` / R${round}` : ""}

@@ -217,11 +217,11 @@ export function SetupPage(): JSX.Element {
 
         {/* Access mode */}
         <section className="glass rounded-2xl p-5 shadow-panel dark:shadow-panel-dark">
-          <fieldset className="flex flex-col gap-2">
-            <legend className="font-sans text-sm font-semibold text-ink dark:text-slate-200">
+          <fieldset className="flex flex-col gap-3">
+            <legend className="mb-1 font-sans text-sm font-semibold text-ink dark:text-slate-200">
               Access Mode
             </legend>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <ModePill
                 label="System (free)"
                 active={authMode === "system"}
@@ -406,11 +406,10 @@ function ModePill({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-lg px-4 py-2 font-sans text-sm font-medium transition-all ${
-        active
+      className={`rounded-lg px-4 py-2 font-sans text-sm font-medium transition-all ${active
           ? "bg-ember text-white shadow-glow-sm"
           : "border border-slate-200 bg-white text-slatewarm hover:border-ember/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-ember/30"
-      }`}
+        }`}
     >
       {label}
     </button>
