@@ -6,6 +6,19 @@ import { fetchByokModels, fetchSystemModels, startRoundtable } from "../lib/api"
 import { useSessionStore } from "../stores/session";
 import type { AuthMode } from "../types";
 
+const BURNING_QUESTIONS = [
+  "What is the most likely impact of AI-native education in the next 5 years?",
+  "Will open-source AI models surpass proprietary ones by 2030?",
+  "Is consciousness possible in large language models, or is it forever out of reach?",
+  "Should AI systems be granted legal personhood if they pass certain benchmarks?",
+  "What is the biggest unsolved problem in computer science that AI could crack first?",
+  "Will programming as a profession exist in 10 years, or will AI replace developers?",
+  "Is social media doing more harm than good to democratic societies?",
+  "What would a post-scarcity economy actually look like in practice?",
+  "Can AI-generated art ever be considered truly creative?",
+  "What is the single most important thing humanity should focus on right now?",
+];
+
 /**
  * Setup form for configuring a deliberation session.
  * Futuristic glassmorphic design with model cards and search filter.
@@ -28,6 +41,16 @@ export function SetupPage(): JSX.Element {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [modelFilter, setModelFilter] = useState("");
+  const [placeholderIdx, setPlaceholderIdx] = useState(
+    () => Math.floor(Math.random() * BURNING_QUESTIONS.length)
+  );
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPlaceholderIdx((prev) => (prev + 1) % BURNING_QUESTIONS.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
 
   const canStart = useMemo(
     () =>
@@ -155,7 +178,7 @@ export function SetupPage(): JSX.Element {
             className="min-h-28 rounded-xl border border-slate-200 bg-white/80 px-4 py-3 font-serif text-base text-ink placeholder-slate-400 transition-colors focus:border-ember focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-ember"
             value={question}
             onChange={(event) => setConfig({ question: event.target.value })}
-            placeholder="What is the most likely impact of AI-native education in the next 5 years?"
+            placeholder={BURNING_QUESTIONS[placeholderIdx]}
             maxLength={2000}
           />
         </label>
