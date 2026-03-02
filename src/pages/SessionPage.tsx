@@ -37,7 +37,7 @@ export function SessionPage(): JSX.Element {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+
   const isNearBottom = useRef(true);
 
   const effectiveSessionId = requestedSessionId ?? sessionId;
@@ -76,10 +76,11 @@ export function SessionPage(): JSX.Element {
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Auto-scroll only when user is already near the bottom
+  // Auto-scroll only the chat container
   useEffect(() => {
-    if (isNearBottom.current) {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatContainerRef.current;
+    if (container && isNearBottom.current) {
+      container.scrollTop = container.scrollHeight;
     }
   }, [timeline.length, liveTokenBuffer]);
 
@@ -249,8 +250,6 @@ export function SessionPage(): JSX.Element {
               <ThinkingMessage model={activeSpeaker} allModels={allModels} />
             ) : null}
 
-            {/* Auto-scroll anchor */}
-            <div ref={chatEndRef} />
           </div>
         </article>
 
