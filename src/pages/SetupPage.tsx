@@ -152,17 +152,14 @@ export function SetupPage(): JSX.Element {
   }
 
   return (
-    <main className="relative mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <main className="relative mx-auto w-full max-w-4xl px-4 pb-8 pt-4 sm:px-6 sm:pb-12 sm:pt-6">
       {/* Hero */}
-      <header className="mb-8 animate-fade-in text-center">
-        <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-ember">
-          Configure Session
-        </p>
+      <header className="mb-5 animate-fade-in text-center">
         <h1 className="font-sans text-3xl font-bold text-ink dark:text-white sm:text-4xl">
           Build Your Roundtable
         </h1>
         <p className="mx-auto mt-3 max-w-xl font-serif text-base text-slatewarm dark:text-slate-400">
-          Pose a burning question, select AI panelists, and watch them deliberate in real time.
+          Pose a burning question, select AI panelists, and watch them talk to each other in real time.
         </p>
       </header>
 
