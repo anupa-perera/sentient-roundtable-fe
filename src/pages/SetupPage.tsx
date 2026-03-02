@@ -46,7 +46,7 @@ export function SetupPage(): JSX.Element {
   const setConfig = useSessionStore((state) => state.setConfig);
   const setAvailableModels = useSessionStore((state) => state.setAvailableModels);
   const setSessionId = useSessionStore((state) => state.setSessionId);
-  const clearUserApiKey = useSessionStore((state) => state.clearUserApiKey);
+  const reset = useSessionStore((state) => state.reset);
 
   const [loadingModels, setLoadingModels] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -140,9 +140,10 @@ export function SetupPage(): JSX.Element {
         auth_mode: authMode,
         user_openrouter_api_key: authMode === "byok" ? userApiKey.trim() : undefined
       });
-      setSessionId(response.session_id);
-      clearUserApiKey();
-      navigate(`/session/${response.session_id}`);
+      const newSessionId = response.session_id;
+      reset();
+      setSessionId(newSessionId);
+      navigate(`/session/${newSessionId}`);
     } catch (error) {
       setFormError(errorMessage(error));
     } finally {
