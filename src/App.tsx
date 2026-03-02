@@ -29,7 +29,7 @@ export default function App(): JSX.Element {
                 Sentient Roundtable
               </span>
               <span className="hidden font-mono text-[9px] text-slatewarm dark:text-slate-500 sm:block">
-                multi-agent deliberation
+                Multi-agent deliberation
               </span>
             </div>
           </Link>
