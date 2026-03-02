@@ -345,33 +345,33 @@ export function SessionPage(): JSX.Element {
 
       {/* Final Findings — only shown once findings are available */}
       {findings && (
-      <section className="glass mt-5 animate-fade-in rounded-2xl p-5 shadow-panel dark:shadow-panel-dark">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 font-sans text-lg font-bold text-ink dark:text-white">
-            <svg
-              className="h-4 w-4 text-ember"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+        <section className="glass mt-5 animate-fade-in rounded-2xl p-5 shadow-panel dark:shadow-panel-dark">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 font-sans text-lg font-bold text-ink dark:text-white">
+              <svg
+                className="h-4 w-4 text-ember"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              Final Findings
+            </h2>
+            <button
+              type="button"
+              disabled={phase !== "complete" || !findings || exporting}
+              onClick={handleExportPdf}
+              className="rounded-xl bg-ember px-4 py-2 font-sans text-xs font-bold uppercase tracking-wider text-white shadow-glow-sm transition-all hover:bg-orange-700 hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
             >
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            Final Findings
-          </h2>
-          <button
-            type="button"
-            disabled={phase !== "complete" || !findings || exporting}
-            onClick={handleExportPdf}
-            className="rounded-xl bg-ember px-4 py-2 font-sans text-xs font-bold uppercase tracking-wider text-white shadow-glow-sm transition-all hover:bg-orange-700 hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
-          >
-            {exporting ? "Exporting..." : "Download PDF"}
-          </button>
-        </div>
-        <div className="rounded-xl border border-slate-200/50 p-4 dark:border-slate-700/30">
-          <MarkdownProse content={findings} />
-        </div>
-      </section>
+              {exporting ? "Exporting..." : "Download PDF"}
+            </button>
+          </div>
+          <div className="rounded-xl border border-slate-200/50 p-4 dark:border-slate-700/30">
+            <MarkdownProse content={findings} />
+          </div>
+        </section>
       )}
     </main>
   );
@@ -511,10 +511,10 @@ function StatusBadge({ phase, round }: { phase: string; round: number }): JSX.El
     <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/80 px-2.5 py-1 dark:border-slate-700 dark:bg-slate-800/80">
       <span
         className={`inline-block h-1.5 w-1.5 rounded-full ${phase === "complete"
-            ? "bg-emerald-500"
-            : phase === "running"
-              ? "animate-pulse bg-ember"
-              : "bg-slate-400"
+          ? "bg-emerald-500"
+          : phase === "running"
+            ? "animate-pulse bg-ember"
+            : "bg-slate-400"
           }`}
       />
       <span className="font-mono text-[10px] font-medium text-slatewarm dark:text-slate-400">
@@ -548,7 +548,7 @@ function PulseBadge({
 }
 
 function SpeakingIndicator({ model }: { model: string }): JSX.Element {
-  return <PulseBadge model={model} label="thinking" />;
+  return <PulseBadge model={model} label="is thinking" />;
 }
 
 function GeneratingIndicator({ model }: { model: string }): JSX.Element {
