@@ -1,10 +1,11 @@
-import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { ChatMessage } from "../components/ChatMessage";
 import { MarkdownProse } from "../components/MarkdownProse";
 import { PhaseProgress } from "../components/PhaseProgress";
 import { StreamingMessage } from "../components/StreamingMessage";
+import { ThinkingMessage } from "../components/ThinkingMessage";
 import { VoteBar } from "../components/VoteBar";
 import { exportSessionPdf } from "../lib/api";
 import { getModelShortName } from "../lib/colors";
@@ -201,12 +202,6 @@ export function SessionPage(): JSX.Element {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {phase === "running" &&
-                (liveTokenModel && liveTokenBuffer ? (
-                  <GeneratingIndicator model={liveTokenModel} />
-                ) : activeSpeaker ? (
-                  <SpeakingIndicator model={activeSpeaker} />
-                ) : null)}
               <StatusBadge phase={phase} round={currentRound} />
             </div>
           </div>
@@ -243,14 +238,16 @@ export function SessionPage(): JSX.Element {
             {/* Render timeline with round dividers */}
             {renderTimeline(timeline, allModels, sortedRounds)}
 
-            {/* Streaming message */}
-            {liveTokenBuffer && liveTokenModel && (
+            {/* Inline thinking / streaming indicator */}
+            {liveTokenBuffer && liveTokenModel ? (
               <StreamingMessage
                 model={liveTokenModel}
                 text={liveTokenBuffer}
                 allModels={allModels}
               />
-            )}
+            ) : activeSpeaker && phase === "running" ? (
+              <ThinkingMessage model={activeSpeaker} allModels={allModels} />
+            ) : null}
 
             {/* Auto-scroll anchor */}
             <div ref={chatEndRef} />
@@ -524,41 +521,3 @@ function StatusBadge({ phase, round }: { phase: string; round: number }): JSX.El
   );
 }
 
-/**
- * Shared pulsing indicator badge for live model status.
- */
-function PulseBadge({
-  model,
-  label,
-  bordered,
-  children
-}: {
-  model: string;
-  label: string;
-  bordered?: boolean;
-  children?: ReactNode;
-}): JSX.Element {
-  return (
-    <span className={`flex items-center gap-1.5 rounded-full bg-ember/10 px-2.5 py-1 font-mono text-[10px] font-medium text-ember ${bordered ? "border border-ember/40" : ""}`}>
-      <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-ember" />
-      {getModelShortName(model)} {label}
-      {children}
-    </span>
-  );
-}
-
-function SpeakingIndicator({ model }: { model: string }): JSX.Element {
-  return <PulseBadge model={model} label="is thinking" />;
-}
-
-function GeneratingIndicator({ model }: { model: string }): JSX.Element {
-  return (
-    <PulseBadge model={model} label="is typing" bordered>
-      <span className="inline-flex items-center">
-        <span className="animate-pulse">.</span>
-        <span className="animate-pulse delay-150">.</span>
-        <span className="animate-pulse delay-300">.</span>
-      </span>
-    </PulseBadge>
-  );
-}
