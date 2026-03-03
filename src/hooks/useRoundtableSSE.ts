@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { API_BASE } from "../lib/api";
 import { useSessionStore } from "../stores/session";
-import type { ModelVotes, StatusEvent } from "../types";
+import type { ModelVotes, StatusEvent, VoteAbstain } from "../types";
 
 /**
  * Parse typed payload from an SSE message event.
@@ -24,6 +24,7 @@ export function useRoundtableSSE(sessionId: string | null): void {
   const finalizeTurn = useSessionStore((state) => state.finalizeTurn);
   const setSummary = useSessionStore((state) => state.setSummary);
   const addVote = useSessionStore((state) => state.addVote);
+  const addVoteAbstain = useSessionStore((state) => state.addVoteAbstain);
   const setFindings = useSessionStore((state) => state.setFindings);
   const setError = useSessionStore((state) => state.setError);
   const setLastEventId = useSessionStore((state) => state.setLastEventId);
@@ -91,6 +92,15 @@ export function useRoundtableSSE(sessionId: string | null): void {
       addVote(payload);
     });
 
+    source.addEventListener("vote_abstain", (event) => {
+      const message = event as MessageEvent<string>;
+      if (message.lastEventId) {
+        setLastEventId(message.lastEventId);
+      }
+      const payload = parseEventData<VoteAbstain>(message);
+      addVoteAbstain(payload);
+    });
+
     source.addEventListener("synthesis", (event) => {
       const message = event as MessageEvent<string>;
       if (message.lastEventId) {
@@ -131,6 +141,7 @@ export function useRoundtableSSE(sessionId: string | null): void {
     };
   }, [
     addVote,
+    addVoteAbstain,
     appendStreamingText,
     beginReplay,
     finalizeTurn,

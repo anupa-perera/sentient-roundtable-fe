@@ -69,6 +69,15 @@ export interface ModelVotes {
 }
 
 /**
+ * Voting abstention emitted when a voter does not return valid vote JSON.
+ */
+export interface VoteAbstain {
+  voter: string;
+  reason: string;
+  message: string;
+}
+
+/**
  * SSE status event payload.
  */
 export interface StatusEvent {

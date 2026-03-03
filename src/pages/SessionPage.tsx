@@ -28,6 +28,7 @@ export function SessionPage(): JSX.Element {
   const timeline = useSessionStore((state) => state.turnTimeline);
   const rounds = useSessionStore((state) => state.roundData);
   const votes = useSessionStore((state) => state.votes);
+  const voteAbstains = useSessionStore((state) => state.voteAbstains);
   const findings = useSessionStore((state) => state.findings);
   const error = useSessionStore((state) => state.error);
   const setError = useSessionStore((state) => state.setError);
@@ -329,7 +330,20 @@ export function SessionPage(): JSX.Element {
                   </div>
                 </article>
               ))}
-              {!votes.length && (
+              {voteAbstains.map((abstain) => (
+                <article
+                  key={abstain.voter}
+                  className="animate-fade-in rounded-xl border border-amber-200/50 bg-amber-50/40 p-3 dark:border-amber-800/20 dark:bg-amber-900/10"
+                >
+                  <p className="mb-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-500">
+                    Voter: {getModelShortName(abstain.voter)}
+                  </p>
+                  <p className="font-sans text-xs text-amber-900 dark:text-amber-300/90">
+                    Abstained: invalid vote payload.
+                  </p>
+                </article>
+              ))}
+              {!votes.length && !voteAbstains.length && (
                 <p className="py-4 text-center font-sans text-xs text-slate-400 dark:text-slate-500">
                   Votes appear during the voting phase.
                 </p>

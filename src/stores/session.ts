@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type {
   AuthMode,
   ModelCatalogEntry,
+  VoteAbstain,
   ModelVotes,
   Phase,
   RoundData,
@@ -32,6 +33,7 @@ interface SessionStore {
   liveTokenModel: string | null;
   turnTimeline: TurnEntry[];
   votes: ModelVotes[];
+  voteAbstains: VoteAbstain[];
   findings: string | null;
 
   error: string | null;
@@ -60,6 +62,8 @@ interface SessionStore {
   setSummary: (round: number, summary: string) => void;
   /** Upsert votes for one voter model. */
   addVote: (vote: ModelVotes) => void;
+  /** Upsert one abstention payload for a voter model. */
+  addVoteAbstain: (abstain: VoteAbstain) => void;
   /** Store final synthesized findings markdown text. */
   setFindings: (document: string) => void;
   /** Set or clear user-facing error message. */
@@ -95,6 +99,7 @@ const initialState = {
   liveTokenModel: null as string | null,
   turnTimeline: [] as TurnEntry[],
   votes: [] as ModelVotes[],
+  voteAbstains: [] as VoteAbstain[],
   findings: null as string | null,
 
   error: null as string | null,
@@ -129,6 +134,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
         liveTokenModel: null,
         turnTimeline: [],
         votes: [],
+        voteAbstains: [],
         findings: null,
         error: null,
         lastEventId: null
@@ -200,7 +206,17 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   /** Upsert voter payload while removing stale version for same voter. */
   addVote: (vote) =>
     set((state) => ({
-      votes: [...state.votes.filter((existing) => existing.voter !== vote.voter), vote]
+      votes: [...state.votes.filter((existing) => existing.voter !== vote.voter), vote],
+      voteAbstains: state.voteAbstains.filter((existing) => existing.voter !== vote.voter)
+    })),
+  /** Upsert abstention payload while removing stale vote from same voter. */
+  addVoteAbstain: (abstain) =>
+    set((state) => ({
+      voteAbstains: [
+        ...state.voteAbstains.filter((existing) => existing.voter !== abstain.voter),
+        abstain
+      ],
+      votes: state.votes.filter((existing) => existing.voter !== abstain.voter)
     })),
   /** Save synthesized findings markdown. */
   setFindings: (document) => set({ findings: document }),
