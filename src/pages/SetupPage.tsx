@@ -168,7 +168,7 @@ export function SetupPage(): JSX.Element {
         <label className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="font-sans text-sm font-semibold text-ink dark:text-slate-200">
-              Burning Question
+              Tell Us About Your Burning Question
             </span>
             <span className="font-mono text-[10px] text-slate-400">
               {question.trim().length}/2000
@@ -352,28 +352,28 @@ export function SetupPage(): JSX.Element {
 
       {/* Host model — appears once at least one panelist is selected */}
       {selectedModels.length > 0 && (
-      <section className="glass mb-5 animate-fade-in rounded-2xl p-5 shadow-panel delay-225 dark:shadow-panel-dark">
-        <label className="flex flex-col gap-2">
-          <span className="font-sans text-sm font-semibold text-ink dark:text-slate-200">
-            Host Model
-          </span>
-          <p className="font-serif text-xs text-slate-400 dark:text-slate-500">
-            The host summarizes each round and guides the discussion.
-          </p>
-          <select
-            value={hostModel}
-            onChange={(event) => setConfig({ hostModel: event.target.value })}
-            className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 font-mono text-sm text-ink focus:border-ember focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100"
-          >
-            <option value="">Select a host from your panelists</option>
-            {selectedModels.map((modelId) => (
-              <option key={modelId} value={modelId}>
-                {modelId}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
+        <section className="glass mb-5 animate-fade-in rounded-2xl p-5 shadow-panel delay-225 dark:shadow-panel-dark">
+          <label className="flex flex-col gap-2">
+            <span className="font-sans text-sm font-semibold text-ink dark:text-slate-200">
+              Host Model
+            </span>
+            <p className="font-serif text-xs text-slate-400 dark:text-slate-500">
+              The host summarizes each round and guides the discussion.
+            </p>
+            <select
+              value={hostModel}
+              onChange={(event) => setConfig({ hostModel: event.target.value })}
+              className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 font-mono text-sm text-ink focus:border-ember focus:outline-none dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100"
+            >
+              <option value="">Select a host from your panelists</option>
+              {selectedModels.map((modelId) => (
+                <option key={modelId} value={modelId}>
+                  {modelId}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
       )}
 
       {/* Error */}
